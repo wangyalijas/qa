@@ -19,13 +19,14 @@ module.exports = {
         }
     },
     Get: class Get {
-        constructor(GUID, name, author, startTime, endTime, sort) {
+        constructor(GUID, name, author, startTime, endTime, sort, isHobby) {
             this.GUID = GUID;
             this.name = name;
             this.author = author;
             this.startTime = startTime;
             this.endTime = endTime;
             this.sort = sort;
+            this.isHobby = isHobby;
         }
     }
 }

@@ -8,10 +8,11 @@ module.exports = {
         }
     },
     Get: class Get {
-        constructor(id, name, sort) {
+        constructor(id, name, sort, isRight) {
             this.id = id;
             this.name = name;
             this.sort = sort;
+            this.isRight = isRight;
         }
     }
 }
