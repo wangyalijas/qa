@@ -1,0 +1,35 @@
+{
+  "development": {
+    "username": "root",
+    "password": "password",
+    "database": "questionnairesurvey",
+    "host": "localhost",
+    "dialect": "mysql",
+    "define": {
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_unicode_ci"
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "Huangyunfei@921",
+    "database": "QuestionnaireSurvey",
+    "host": "101.132.172.137",
+    "dialect": "mysql",
+    "define": {
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_unicode_ci"
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": "Huangyunfei@921",
+    "database": "QuestionnaireSurvey",
+    "host": "101.132.172.137",
+    "dialect": "mysql",
+    "define": {
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_unicode_ci"
+    }
+  }
+}
