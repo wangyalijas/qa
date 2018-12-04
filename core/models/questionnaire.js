@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     startTime: DataTypes.DATE,
     endTime: DataTypes.DATE,
     qrcode: DataTypes.STRING,
+    isHobby: DataTypes.BOOLEAN,
     sort: DataTypes.INTEGER,
     isActive: DataTypes.BOOLEAN
   }, {});

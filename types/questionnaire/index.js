@@ -9,12 +9,13 @@ module.exports = {
     },
     // 问卷添加类
     Add: class Add {
-        constructor(name, author, startTime, endTime, sort) {
+        constructor(name, author, startTime, endTime, sort, isHobby) {
             this.name = name;
             this.author = author;
             this.startTime = startTime;
             this.endTime = endTime;
             this.sort = sort;
+            this.isHobby = isHobby;
         }
     },
     Get: class Get {
