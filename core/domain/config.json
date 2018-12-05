@@ -1,11 +1,11 @@
 {
-    "development": {
-      "username": "root",
-      "password": "password",
-      "database": "questionnairesurvey",
-      "host": "localhost",
-      "dialect": "mysql"
-    },
+  "development": {
+    "username": "root",
+    "password": "WinningUED@2018",
+    "database": "questionairesurvey",
+    "host": "172.16.0.116",
+    "dialect": "mysql"
+  },
   "test": {
     "username": "root",
     "password": "WinningUED@2018",

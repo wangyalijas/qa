@@ -28,7 +28,7 @@ const Answer = model.Answer
 // 新增调查问卷
 async function postBuildQuestionnaire(msg) {
     // 处理空字符串
-    extension.DeleteSpecialProperty(msg, ['name', 'author', 'answers', 'selections'])
+    extension.DeleteSpecialProperty(msg, ['name', 'author', 'answers', 'selections', 'describe'])
     // 不合法字段
     const illegalArr = extension.VerifyMatchRegular(msg, verifyRule.Questionnaire)
     if (illegalArr.length) {
@@ -134,7 +134,7 @@ async function getQuestionnaireList({userNo}) {
             userNo,
             isActive: true
           },
-          require: false
+          required: false
         }]
     })
     return rawRes.map(item => extension.CloneTo(item.dataValues, questionnaireType.Get, {

@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     GUID: DataTypes.STRING,
     name: DataTypes.STRING,
     author: DataTypes.STRING,
+    describe: DataTypes.STRING,
     startTime: DataTypes.DATE,
     endTime: DataTypes.DATE,
     qrcode: DataTypes.STRING,
