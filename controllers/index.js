@@ -1,8 +1,8 @@
 const logUtil = require('../log/util')
 const generic = require('../utils/generic')
 const extension = require('../utils/extensions')
-const utilsType = require('../types/utils/index')
-const questionnaireType = require('../types/questionnaire/index')
+const utilsType = require('../dtos/utils/index')
+const questionnaireType = require('../dtos/questionnaire/index')
 const indexService = require('../core/services/index')
 
 module.exports = {

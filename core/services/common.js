@@ -11,7 +11,7 @@ async function postAccessLog(msg) {
         api: msg.request.path,
         ip: msg.request.ip,
         query: msg.query ? JSON.stringify(msg.query) : null,
-        request: msg.request.body ? JSON.stringify(msg.request.body) : null
+        // request: msg.request.body ? JSON.stringify(msg.request.body) : null
     })
 }
 

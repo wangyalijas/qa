@@ -1,10 +1,5 @@
 .DS_Store
 node_modules/
-dist/
-static/collection/
-static/img/
-static/standard/
-static/download/
 log/error/
 log/response/
 npm-debug.log*
