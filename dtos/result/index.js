@@ -7,9 +7,10 @@ module.exports = {
         }
     },
     AddAnswer: class Get {
-        constructor(answerId, answerContent) {
+        constructor(answerId, answerContent, userNo) {
             this.answerId = answerId;
             this.answerContent = answerContent;
+            this.userNo = userNo;
         }
     }
 }

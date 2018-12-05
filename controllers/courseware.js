@@ -5,12 +5,11 @@ const courseService = require('../core/services/courseware')
 
 module.exports = {
     // 上传课件源文件
-    'POST /api/postCourseware': [generic.dealAccessLog(), generic.addUploadFile('courseware/pdf').single('courseware'), async (ctx, next) => {
+    'POST /api/postCourseware': [generic.dealAccessLog(), generic.addUploadFile('courseware/pdf').array('courseware', 12), async (ctx, next) => {
         const start = new Date();
         let ms;
         try {
-            let fileAddress = `${ctx.req.file.filename}`;
-            ctx.rest(fileAddress)
+            ctx.rest(ctx.req.files)
         } catch (error) {
             ms = new Date() - start;
             logUtil.logError(ctx, error, ms)

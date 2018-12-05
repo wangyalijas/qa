@@ -8,10 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     answerId: DataTypes.INTEGER,
     optionId: DataTypes.INTEGER,
     answerContent: DataTypes.TEXT,
-    isActive: DataTypes.BOOLEAN
+    isActive: DataTypes.BOOLEAN,
+    userNo: DataTypes.STRING,
   }, {});
   Result.associate = function (models) {
-    
+
   };
   return Result;
 };
