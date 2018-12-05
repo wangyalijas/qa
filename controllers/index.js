@@ -43,7 +43,11 @@ module.exports = {
         const start = new Date();
         var ms;
         try {
-            let result = await indexService.getQuestionnaireList()
+          let data = ctx.query
+          let result = new utilsType.Error()
+          if (data.userNo) {
+            result = await indexService.getQuestionnaireList(data)
+          }
             ctx.rest(result)
         } catch (error) {
             ms = new Date() - start;
@@ -57,7 +61,7 @@ module.exports = {
         try {
             let data = ctx.request.body
             let result = new utilsType.Error()
-            if (data.questionnaireId && data.selections && data.answers) {
+            if (data.questionnaireId && data.userNo && data.answers) {
                 result = await indexService.postSubmitQuestionnaire(data)
             }
             ctx.rest(result)

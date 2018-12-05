@@ -6,9 +6,7 @@ module.exports = {
       defaultValue: false,
       type: Sequelize.BOOLEAN,
     })
-
   },
-
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Questionnaires');
   }

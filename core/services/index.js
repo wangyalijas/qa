@@ -123,21 +123,24 @@ async function getQuestionnaire(msg) {
 }
 
 // 获取问卷列表
-async function getQuestionnaireList() {
+async function getQuestionnaireList({userNo}) {
     let rawRes = await Questionnaire.findAll({
         where: {
             isActive: true
         },
-        raw: true
+        include: [{
+          association: Questionnaire.Results,
+          where: {
+            userNo,
+            isActive: true
+          },
+          require: false
+        }]
     })
-    // const isinvalid = function (start, end) {
-    //     const now = Date.now()
-    //     return (now > start && now < end) ? false : true
-    // }
-    return rawRes.map(item => extension.CloneTo(item, questionnaireType.Get, {
+    return rawRes.map(item => extension.CloneTo(item.dataValues, questionnaireType.Get, {
+        isChecked: item.Results.length,
         startTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', item.startTime),
         endTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', item.endTime),
-        //isinvalid: isinvalid(item.startTime, item.endTime),
         qrcode: CONSTANT.QR_URL + item.qrcode
     }))
 }
@@ -164,12 +167,10 @@ async function postSubmitQuestionnaire(msg) {
     // 提交
     const GUID = uuidv4().toUpperCase()
     await sequelize.transaction(t => {
-        return Result.bulkCreate([...msg.selections.map(item => extension.CloneTo(item, resultType.AddSelection, {
+        return Result.bulkCreate([...msg.answers.map(item => extension.CloneTo(item, resultType.AddAnswer, {
             GUID,
-            questionnaireId: msg.questionnaireId
-        })), ...msg.answers.map(item => extension.CloneTo(item, resultType.AddAnswer, {
-            GUID,
-            questionnaireId: msg.questionnaireId
+            questionnaireId: msg.questionnaireId,
+            userNo: msg.userNo
         }))], {
             transaction: t
         })
