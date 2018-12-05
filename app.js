@@ -1,10 +1,10 @@
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const cors = require('koa2-cors')
-const controller = require('./controller')
-const config = require('./config')
-const rest = require('./rest')
-const staticFiles = require('./static-files')
+const controller = require('./config/config.controller')
+const config = require('./config/config.common')
+const rest = require('./config/config.rest')
+const staticFiles = require('./config/config.static')
 const app = new Koa()
 
 process.env.NODE_ENV = 'development'
@@ -31,11 +31,16 @@ app.use(cors({
     allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Token']
 }))
 
-// 使用静态文件，开发环境静态文件由iis或nginx守护
-if (!isProduction) app.use(staticFiles('/static/', __dirname + '/static'))
+// 代理公开的静态文件，开发环境静态文件由iis或nginx守护
+if (!isProduction) app.use(staticFiles('/public/'))
 
 // parse request body:
-app.use(bodyParser())
+app.use(bodyParser({
+    formLimit: "20mb",
+    jsonLimit: "3mb",
+    textLimit: "3mb",
+    enableTypes: ['json', 'form', 'text']
+}))
 
 // bind .rest() for ctx:
 app.use(rest.restify())

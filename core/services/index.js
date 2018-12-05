@@ -5,14 +5,14 @@ const qrCode = require('qrcode')
 const extension = require('../../utils/extensions') // 扩展方法
 const generic = require('../../utils/generic') // 通用方法
 
-const CONSTANT = require('../../types/common/constant') // 常量
+const CONSTANT = require('../../dtos/common/constant') // 常量
 const verifyRule = require('../../utils/verify')
-const utilsType = require('../../types/utils/index') // 通用类
-const questionnaireType = require('../../types/questionnaire/index')
-const selectionType = require('../../types/selection/index')
-const optionType = require('../../types/option/index')
-const answerType = require('../../types/answer/index')
-const resultType = require('../../types/result/index')
+const utilsType = require('../../dtos/utils/index') // 通用类
+const questionnaireType = require('../../dtos/questionnaire/index')
+const selectionType = require('../../dtos/selection/index')
+const optionType = require('../../dtos/option/index')
+const answerType = require('../../dtos/answer/index')
+const resultType = require('../../dtos/result/index')
 
 
 const model = require('../models/index') // orm映射实体
