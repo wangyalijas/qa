@@ -63,18 +63,19 @@ async function postBuildQuestionnaire(msg) {
         }],
         transaction: t
       }).then(async (questionnaire) => {
-        for (let i = 0; i < msg.coursewares.length; i++) {
-           await Courseware.create(extension.CloneTo(msg.coursewares[i], coursewareType.Add, {
-            questionnaireId: questionnaire.GUID
-          }), {
-            transaction: t
-          }).then(async (courseWare) => {
-             // console.log(coursewarePDF2IMG(courseWare.dataValues.path, courseWare.dataValues.questionnaireId))
-          }).catch(e => {
-            throw e;
-          })
+        if (msg.coursewares && msg.coursewares.length) {
+          for (let i = 0; i < msg.coursewares.length; i++) {
+            await Courseware.create(extension.CloneTo(msg.coursewares[i], coursewareType.Add, {
+              questionnaireId: questionnaire.GUID
+            }), {
+              transaction: t
+            }).then(async (courseWare) => {
+              // console.log(coursewarePDF2IMG(courseWare.dataValues.path, courseWare.dataValues.questionnaireId))
+            }).catch(e => {
+              throw e;
+            })
+          }
         }
-
       })
     }).catch(e => {
       throw e;
