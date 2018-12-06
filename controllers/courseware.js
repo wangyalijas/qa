@@ -22,8 +22,8 @@ module.exports = {
         try {
             let result = new utilsType.Error()
             let data = ctx.query
-            if (data.name && data.questionnaireId) {
-                result = await courseService.coursewarePDF2IMG(data.name, data.questionnaireId)
+            if (data.questionnaireId) {
+                result = await courseService.getCoursewareList(data)
             }
             ctx.rest(result)
         } catch (error) {

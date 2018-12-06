@@ -1,13 +1,13 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const CourseWare = sequelize.define('CourseWare', {
+  const Courseware = sequelize.define('Courseware', {
     name: DataTypes.STRING,
     path: DataTypes.STRING,
     questionnaireId: DataTypes.STRING,
     isActive: DataTypes.BOOLEAN
   }, {});
-  CourseWare.associate = function(models) {
+  Courseware.associate = function(models) {
     // associations can be defined here
   };
-  return CourseWare;
+  return Courseware;
 };
