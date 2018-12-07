@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Courseware = sequelize.define('Courseware', {
     name: DataTypes.STRING,
     path: DataTypes.STRING,
+    cover: DataTypes.STRING,
     questionnaireId: DataTypes.STRING,
     isActive: DataTypes.BOOLEAN
   }, {});

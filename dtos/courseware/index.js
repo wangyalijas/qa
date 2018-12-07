@@ -6,9 +6,10 @@ module.exports = {
     }
   },
   Get: class Get {
-    constructor(path, name) {
+    constructor(path, name, cover) {
       this.path = path;
       this.name = name;
+      this.cover = cover;
     }
   }
 }
