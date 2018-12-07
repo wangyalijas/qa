@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     questionnaireId: DataTypes.STRING,
     sort: DataTypes.INTEGER,
+    placeHolder:DataTypes.STRING,
     isActive: DataTypes.BOOLEAN
   }, {});
   Answer.associate = function (models) {

@@ -7,10 +7,11 @@ module.exports = {
         }
     },
     Get: class Get {
-        constructor(id, name, sort) {
+        constructor(id, name, sort, placeHolder) {
             this.id = id;
             this.name = name;
             this.sort = sort;
+            this.placeHolder = placeHolder;
         }
     }
 }
