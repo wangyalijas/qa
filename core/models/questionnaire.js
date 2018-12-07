@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: 'GUID',
       foreignKey: 'questionnaireId'
     })
+    this.UserQuestionnaires = this.hasMany(models.UserQuestionnaire, {
+      as: 'UserQuestionnaires',
+      sourceKey: 'GUID',
+      foreignKey: 'questionnaireId'
+    })
   };
   return Questionnaire;
 };

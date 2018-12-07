@@ -26,6 +26,7 @@ const Result = model.Result
 const Option = model.Option
 const Answer = model.Answer
 const Courseware = model.Courseware
+const UserQuestionnaire = model.UserQuestionnaire
 
 const coursewarePDF2IMG = require('./courseware').coursewarePDF2IMG
 // 新增调查问卷
@@ -137,16 +138,17 @@ async function getQuestionnaireList({userNo}) {
       isActive: true
     },
     include: [{
-      association: Questionnaire.Results,
+      association: Questionnaire.UserQuestionnaires,
       where: {
         userNo,
         isActive: true
       },
       required: false
-    }]
+    }],
+    order: ['id']
   })
   return rawRes.map(item => extension.CloneTo(item.dataValues, questionnaireType.Get, {
-    isChecked: item.Results.length,
+    isChecked: item.UserQuestionnaires.length,
     startTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', item.startTime),
     endTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', item.endTime),
     qrcode: CONSTANT.QR_URL + item.qrcode
@@ -181,6 +183,11 @@ async function postSubmitQuestionnaire(msg) {
       userNo: msg.userNo
     }))], {
       transaction: t
+    }).then(()=> {
+      return UserQuestionnaire.create({
+        questionnaireId: msg.questionnaireId,
+        userNo: msg.userNo
+      })
     })
   }).then(() => {
     result = new utilsType.Tips(true, '问卷已提交！')
