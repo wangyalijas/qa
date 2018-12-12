@@ -28,6 +28,7 @@ module.exports = {
         var ms;
         try {
             let data = ctx.query
+            console.log(data)
             let result = new utilsType.Error()
             if (data.questionnaireId) {
                 result = await indexService.getQuestionnaire(data)
@@ -38,6 +39,23 @@ module.exports = {
             logUtil.logError(ctx, error, ms)
         }
     }],
+    // 获取已填写的问卷
+    'GET /api/getCompletedQuestionnaire': [generic.dealAccessLog(), async (ctx, next) => {
+    const start = new Date();
+    var ms;
+    try {
+      let data = ctx.query
+      console.log(data)
+      let result = new utilsType.Error()
+      if (data.questionnaireId && data.userNo) {
+        result = await indexService.getCompletedQuestionnaire(data)
+      }
+      ctx.rest(result)
+    } catch (error) {
+      ms = new Date() - start;
+      logUtil.logError(ctx, error, ms)
+    }
+  }],
     // 获取调查问卷列表
     'GET /api/getQuestionnaireList': [generic.dealAccessLog(), async (ctx, next) => {
         const start = new Date();

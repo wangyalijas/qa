@@ -14,5 +14,14 @@ module.exports = {
             this.sort = sort;
             this.type = type;
         }
+    },
+  CompletedGet: class CompletedGet {
+    constructor(id, name, sort, isRight, type, result) {
+      this.id = id;
+      this.name = name;
+      this.sort = sort;
+      this.type = type;
+      this.result = result;
     }
+  }
 }

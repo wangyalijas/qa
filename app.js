@@ -48,7 +48,7 @@ app.use(rest.restify())
 // add controllers:
 app.use(controller.addController())
 
-app.listen(3004)
+app.listen(3010)
 
 // 检查来源是否在黑名单中
 function checkOrgin(orgin) {

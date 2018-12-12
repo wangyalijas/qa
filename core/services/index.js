@@ -29,6 +29,7 @@ const Courseware = model.Courseware
 const UserQuestionnaire = model.UserQuestionnaire
 
 const coursewarePDF2IMG = require('./courseware').coursewarePDF2IMG
+
 // 新增调查问卷
 async function postBuildQuestionnaire(msg) {
   // 处理空字符串
@@ -131,6 +132,84 @@ async function getQuestionnaire(msg) {
   return result
 }
 
+async function getCompletedQuestionnaire(msg) {
+  const illegalArr = extension.VerifyMatchRegular(msg, verifyRule.Questionnaire)
+  if (illegalArr.length) {
+    return new utilsType.Tips(false, `内容不符合要求，请重新输入！非法字段：${illegalArr.join(',')}`)
+  }
+  let rawRes = await Questionnaire.find({
+    where: {
+      GUID: msg.questionnaireId,
+      isActive: true
+    },
+    include: [
+      {
+        association: Questionnaire.UserQuestionnaires,
+        where: {
+          userNo: msg.userNo,
+          isActive: true
+        },
+        required: false
+      },
+      {
+        association: Questionnaire.Selections,
+        include: [Selection.Options],
+      },
+      {
+        association: Questionnaire.Answers,
+        include: [
+        {
+          association: Answer.AnswerResults,
+          where: {
+            userNo: msg.userNo,
+            questionnaireId: msg.questionnaireId,
+            isActive: true
+          },
+          required: false
+        }
+        ]
+      }
+      ],
+    order: [
+      [Questionnaire.Selections, 'sort'],
+      [Questionnaire.Answers, 'sort'],
+      [Questionnaire.Selections, Selection.Options, 'sort']
+    ]
+  })
+  if (!rawRes) return new utilsType.Tips(false, '没有查找到符合问卷！', 404)
+  // 数据格式化
+  let result = extension.CloneTo(rawRes.dataValues, questionnaireType.Get, {
+    isChecked: rawRes.UserQuestionnaires.length,
+    startTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', rawRes.startTime),
+    endTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', rawRes.startTime),
+    qrcode: CONSTANT.QR_URL + rawRes.qrcode,
+    selections: rawRes.dataValues.selections.map(sel => ({
+      ...extension.CloneTo(sel.dataValues, selectionType.CompletedGet, {
+        result: sel.dataValues.type === 'Selection' ? sel.dataValues.options.map(opt => {
+          if(!opt.isRight) {
+            return
+          }
+          return opt.id
+        }).shift() : sel.dataValues.options.map(opt => {
+          if(!opt.isRight) {
+            return
+          }
+          return opt.id
+        })
+      }),
+      options: sel.dataValues.options.map(opt => ({
+        ...extension.CloneTo(opt.dataValues, optionType.Get)
+      }))
+    })),
+    answers: rawRes.dataValues.answers.map(ans => ({
+      ...extension.CloneTo(ans.dataValues, answerType.CompletedGet, {
+        result: ans.dataValues.result.pop().dataValues.answerContent
+      })
+    }))
+  })
+  return result
+}
+
 // 获取问卷列表
 async function getQuestionnaireList({userNo}) {
   let rawRes = await Questionnaire.findAll({
@@ -183,7 +262,7 @@ async function postSubmitQuestionnaire(msg) {
       userNo: msg.userNo
     }))], {
       transaction: t
-    }).then(()=> {
+    }).then(() => {
       return UserQuestionnaire.create({
         questionnaireId: msg.questionnaireId,
         userNo: msg.userNo
@@ -243,6 +322,7 @@ async function getQuestionnaireStatic(msg) {
 module.exports = {
   postBuildQuestionnaire,
   getQuestionnaire,
+  getCompletedQuestionnaire,
   getQuestionnaireList,
   postSubmitQuestionnaire,
   getQuestionnaireStatic

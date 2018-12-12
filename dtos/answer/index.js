@@ -13,5 +13,14 @@ module.exports = {
             this.sort = sort;
             this.placeHolder = placeHolder;
         }
+    },
+    CompletedGet: class  CompletedGet{
+      constructor(id, name, sort, placeHolder, result) {
+        this.id = id;
+        this.name = name;
+        this.sort = sort;
+        this.placeHolder = placeHolder;
+        this.result = result;
+      }
     }
 }
