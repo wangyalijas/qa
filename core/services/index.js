@@ -190,12 +190,12 @@ async function getCompletedQuestionnaire(msg) {
             return
           }
           return opt.id
-        }).shift() : sel.dataValues.options.map(opt => {
+        }).filter(item => item).shift() : sel.dataValues.options.map(opt => {
           if(!opt.isRight) {
             return
           }
           return opt.id
-        })
+        }).filter(item => item)
       }),
       options: sel.dataValues.options.map(opt => ({
         ...extension.CloneTo(opt.dataValues, optionType.Get)
