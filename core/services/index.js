@@ -185,8 +185,7 @@ async function getCompletedQuestionnaire(msg) {
     qrcode: CONSTANT.QR_URL + rawRes.qrcode,
     selections: rawRes.dataValues.selections.map(sel => ({
       ...extension.CloneTo(sel.dataValues, selectionType.CompletedGet, {
-        result: sel.dataValues.type === 'Selection' ? sel.dataValues.options.
-        map(opt => {
+        result: sel.dataValues.type === 'Selection' ? sel.dataValues.options.map(opt => {
           if(!opt.isRight) {
             return
           }
