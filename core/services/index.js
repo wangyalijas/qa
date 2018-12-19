@@ -264,12 +264,11 @@ async function postSubmitQuestionnaire(msg) {
 }
 
 // 打印
-async function getQuestionnaireStatic({a}) {
-  let b = a.split(",");
+async function getQuestionnaireStatic({dates}) {
+  let datesHandles = dates.split(",");
 
   let excelData = [];
-  for (let i = 0; i < b.length; i++) {
-    let timestamp = Date.parse(b[i])
+  for (let i = 0; i < datesHandles.length; i++) {
     let orgin = await User.findAll({
       attributes: ['name', 'userNo', 'department'],
       where: {
@@ -279,7 +278,7 @@ async function getQuestionnaireStatic({a}) {
         attributes: ['answerId', 'answerContent', 'createdAt', 'GUID'],
         where: {
           [Op.and]: [
-            sequelize.literal("substring(convert_tz(`userResult`.`createdAt`, '+00:00','+08:00') ,1,10) = '"+b[i]+"' and `userResult`.`isActive` = true")
+            sequelize.literal("substring(convert_tz(`userResult`.`createdAt`, '+00:00','+08:00') ,1,10) = '"+datesHandles[i]+"' and `userResult`.`isActive` = true")
           ]
         },
         association: User.userResult,
@@ -287,11 +286,14 @@ async function getQuestionnaireStatic({a}) {
       }]
     })
     let orginHandler = orgin.map(item =>
-      [item.dataValues.name, item.dataValues.userNo, item.dataValues.department, ...item.dataValues.userResult.map(result => result.dataValues.answerContent)]
+      [item.dataValues.name,
+      item.dataValues.userNo,
+      item.dataValues.department,
+      ...item.dataValues.userResult.map(result => result.dataValues.answerContent)]
     )
     excelData.push({
-      sheetName: b[i],
-      rowNames: ['姓名', '工号', '工作地', 's', ''],
+      sheetName: datesHandles[i],
+      rowNames: ['姓名', '工号', '部门', 's', ''],
       data: orginHandler
     })
   }
