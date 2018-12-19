@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   UserEntity.associate = function (models) {
-    // associations can be defined here
+    this.userResult = this.hasMany(models.Result, {
+      as: 'userResult',
+      sourceKey: 'userNo',
+      foreignKey: 'userNo'
+    })
   };
   return UserEntity;
 };

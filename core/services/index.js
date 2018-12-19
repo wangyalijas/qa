@@ -23,13 +23,14 @@ const sequelize = model.sequelize
 const Questionnaire = model.Questionnaire
 const Selection = model.Selection
 const Result = model.Result
+const User = model.UserEntity
 const Option = model.Option
 const Answer = model.Answer
 const Courseware = model.Courseware
 const UserQuestionnaire = model.UserQuestionnaire
 
 const coursewarePDF2IMG = require('./courseware').coursewarePDF2IMG
-
+const Excel = require('exceljs')
 // 新增调查问卷
 async function postBuildQuestionnaire(msg) {
   // 处理空字符串
@@ -240,20 +241,6 @@ async function postSubmitQuestionnaire(msg) {
   if (illegalArr.length) {
     return new utilsType.Tips(false, `内容不符合要求，请重新输入！非法字段：${illegalArr.join(',')}`, 500)
   }
-  // 检查是否过期
-  // const now = Date.now()
-  // const isAllow = await generic.isExit(Questionnaire, {
-  //     GUID: msg.questionnaireId,
-  //     startTime: {
-  //         [Op.lt]: now
-  //     },
-  //     endTime: {
-  //         [Op.gt]: now
-  //     },
-  //     isActive: true
-  // })
-  // if (!isAllow[0]) return new utilsType.Tips(false, '问卷不可做！', 500)
-  // 提交
   const GUID = uuidv4().toUpperCase()
   await sequelize.transaction(t => {
     return Result.bulkCreate([...msg.answers.map(item => extension.CloneTo(item, resultType.AddAnswer, {
@@ -276,46 +263,61 @@ async function postSubmitQuestionnaire(msg) {
   return result
 }
 
-// 获取分析结果
-async function getQuestionnaireStatic(msg) {
-  const illegalArr = extension.VerifyMatchRegular(msg, verifyRule.Questionnaire)
-  if (illegalArr.length) {
-    return new utilsType.Tips(false, `内容不符合要求，请重新输入！非法字段：${illegalArr.join(',')}`, 500)
-  }
-  let rawRes = await Questionnaire.find({
-    where: {
-      GUID: msg.questionnaireId,
-      isActive: true
-    },
-    include: [{
-      association: Questionnaire.Selections,
-      include: [{
-        association: Selection.Options,
-        include: [Option.OptionResults]
-      }]
-    }, {
-      association: Questionnaire.Answers,
-      include: [Answer.AnswerResults]
-    }]
-  })
-  // 数据格式化
-  let result = extension.CloneTo(rawRes.dataValues, questionnaireType.Get, {
-    startTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', rawRes.startTime),
-    endTime: generic.formatTime('yyyy-MM-dd hh:mm:ss', rawRes.startTime),
-    qrcode: CONSTANT.QR_URL + rawRes.qrcode,
-    selections: rawRes.dataValues.selections.map(sel => ({
-      ...extension.CloneTo(sel.dataValues, selectionType.Get),
-      options: sel.dataValues.options.map(opt => ({
-        ...extension.CloneTo(opt.dataValues, optionType.Get),
-        count: opt.dataValues.result.length
-      }))
-    })),
-    answers: rawRes.dataValues.answers.map(ans => ({
-      ...extension.CloneTo(ans.dataValues, answerType.Get),
-      answerContents: ans.dataValues.result.map(item => item.answerContent)
-    }))
-  })
+// 打印
+async function getQuestionnaireStatic({a}) {
+  let b = a.split(",");
 
+  let excelData = [];
+  for (let i = 0; i < b.length; i++) {
+    let timestamp = Date.parse(b[i])
+    let orgin = await User.findAll({
+      attributes: ['name', 'userNo', 'department'],
+      where: {
+        isActive: true
+      },
+      include: [{
+        attributes: ['answerId', 'answerContent', 'createdAt', 'GUID'],
+        where: {
+          [Op.and]: [
+            sequelize.literal("substring(convert_tz(`userResult`.`createdAt`, '+00:00','+08:00') ,1,10) = '"+b[i]+"' and `userResult`.`isActive` = true")
+          ]
+        },
+        association: User.userResult,
+        'order': "answerId DESC"
+      }]
+    })
+    let orginHandler = orgin.map(item =>
+      [item.dataValues.name, item.dataValues.userNo, item.dataValues.department, ...item.dataValues.userResult.map(result => result.dataValues.answerContent)]
+    )
+    excelData.push({
+      sheetName: b[i],
+      rowNames: ['姓名', '工号', '工作地', 's', ''],
+      data: orginHandler
+    })
+  }
+  const GUID = uuidv4().toUpperCase();
+  let result = await data2Excel(excelData, GUID)
+  return result
+}
+
+// 导出Excel
+async function data2Excel(msg, fileName) {
+  // 整理成表格
+  let workbook = new Excel.Workbook();
+  for (let i = 0; i < msg.length; i++) {
+    //add header
+    let ws = workbook.addWorksheet(msg[i].sheetName);
+    ws.addRow(msg[i].rowNames);
+    msg[i].data.map(item => {
+      ws.addRow(item)
+    })
+  }
+  await workbook.xlsx.writeFile(`static/download/${fileName}.xlsx`)
+    .then(() => {
+      result = new utilsType.Tips(true, `/download/${fileName}.xlsx`)
+    }).catch(() => {
+      result = utilsType.Tips(false, '下载失败，请重试！')
+    })
   return result
 }
 

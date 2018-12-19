@@ -28,7 +28,6 @@ module.exports = {
         var ms;
         try {
             let data = ctx.query
-            console.log(data)
             let result = new utilsType.Error()
             if (data.questionnaireId) {
                 result = await indexService.getQuestionnaire(data)
@@ -94,14 +93,13 @@ module.exports = {
         var ms;
         try {
             let data = ctx.query
-            let result = new utilsType.Error()
-            if (data.questionnaireId) {
-                result = await indexService.getQuestionnaireStatic(data)
-            }
+            let result = await indexService.getQuestionnaireStatic(data)
             ctx.rest(result)
         } catch (error) {
+            console.log(error)
             ms = new Date() - start;
             logUtil.logError(ctx, error, ms)
         }
-    }]
+    }],
+    // 打印
 };
